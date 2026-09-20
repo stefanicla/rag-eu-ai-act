@@ -13,9 +13,7 @@
 ![Pytest](https://img.shields.io/badge/pytest-%230A9EDC.svg?style=for-the-badge&logo=pytest&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 ![Offline](https://img.shields.io/badge/offline-100%25-brightgreen.svg?style=for-the-badge&logo=lock&logoColor=white)
-<!-- TODO: replace YOUR_REPO with your GitHub repo name once created, then uncomment:
-![CI](https://github.com/stefanicla/YOUR_REPO/actions/workflows/ci/badge.svg)
--->
+![CI](https://github.com/stefanicla/rag-eu-ai-act/actions/workflows/ci/badge.svg)
 
 Local RAG over the EU AI Act in English. Ask about bans, high-risk duties, GPAI rules and fines. Every answer links to the passages it used. Nothing leaves your machine.
 
@@ -57,7 +55,7 @@ Two equivalent paths. Pick one.
 Uses your local `mise`/`uv` for Python. Faster rebuilds when you change Python code.
 
 ```bash
-git clone <your-fork> rag-ai-act && cd rag-ai-act
+git clone git@github.com:stefanicla/rag-eu-ai-act.git && cd rag-eu-ai-act
 cp .env.example .env
 make setup     # starts qdrant+ollama, pulls models, downloads corpus, ingests
 make app       # runs Streamlit at http://localhost:8501
@@ -72,7 +70,7 @@ Open http://localhost:8501 and ask "Which AI practices are prohibited?"
 Everything runs in containers. Good for a clean machine or CI.
 
 ```bash
-git clone <your-fork> rag-ai-act && cd rag-ai-act
+git clone git@github.com:stefanicla/rag-eu-ai-act.git && cd rag-eu-ai-act
 cp .env.example .env
 docker compose up -d --build
 docker compose exec app uv run python src/ingest.py --rebuild  # first run only, after models are pulled
