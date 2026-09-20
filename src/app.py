@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import httpx
+import ollama
 import streamlit as st
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.embeddings.ollama import OllamaEmbedding
@@ -23,7 +24,6 @@ def _patched_client_init(self, *args, **kwargs):
 httpx.Client.__init__ = _patched_client_init
 
 # Also patch ollama.Client to pass timeout via kwargs to internal httpx client
-import ollama
 _orig_ollama_init = ollama.Client.__init__
 
 def _patched_ollama_init(self, host=None, **kwargs):
