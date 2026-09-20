@@ -1,0 +1,7 @@
+[tools]
+python = "3.13.15"
+uv = "latest"
+
+[env]
+UV_PYTHON = "3.13.15"
+PYTHONDONTWRITEBYTECODE = "1"

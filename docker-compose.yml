@@ -1,0 +1,120 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    container_name: rag-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333 && printf 'GET /readyz HTTP/1.0\r\nHost: localhost\r\n\r\n' >&3 && grep -q '200' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
+
+  ollama:
+    image: ollama/ollama:0.33.1
+    container_name: rag-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    environment:
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_NUM_CTX: "4096"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+
+  # Pull required models into the ollama_data volume before the app starts.
+  # Reads model names from .env (LLM_MODEL, EMBED_MODEL) with defaults.
+  ollama-puller:
+    image: ollama/ollama:0.33.1
+    container_name: rag-ollama-puller
+    restart: "no"
+    volumes:
+      - ollama_data:/root/.ollama
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      # Resolved from .env (LLM_MODEL/EMBED_MODEL) with safe defaults.
+      PULL_LLM_MODEL: ${LLM_MODEL:-openbmb/minicpm5-2b}
+      PULL_EMBED_MODEL: ${EMBED_MODEL:-nomic-embed-text}
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -euo pipefail
+        echo "Waiting for Ollama..."
+        for i in $(seq 1 30); do
+          if curl -fsS http://ollama:11434/api/tags >/dev/null 2>&1; then break; fi
+          sleep 2
+        done
+        echo "PULL_LLM_MODEL=$${PULL_LLM_MODEL}"
+        echo "PULL_EMBED_MODEL=$${PULL_EMBED_MODEL}"
+        for m in "$${PULL_LLM_MODEL}" "$${PULL_EMBED_MODEL}"; do
+          echo "Pulling $${m}..."
+          ollama pull "$${m}"
+        done
+        echo "Models ready."
+    depends_on:
+      ollama:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
+
+  app:
+    build: .
+    container_name: rag-app
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      QDRANT_URL: http://qdrant:6333
+    volumes:
+      - ./data:/app/data:ro
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+      ollama-puller:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
+
+volumes:
+  qdrant_data:
+  ollama_data:

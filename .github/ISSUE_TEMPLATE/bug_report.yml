@@ -1,0 +1,24 @@
+name: 🐛 Bug report
+description: Report a reproducible problem
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      placeholder: What you ran, what you expected, what you got
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: OS, CPU/GPU, RAM/VRAM, Docker version, LLM_MODEL / EMBED_MODEL
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste `docker compose ps`, `make logs` excerpt, or app traceback
+      render: shell

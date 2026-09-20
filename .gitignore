@@ -1,0 +1,52 @@
+# Volumes / local runtime data
+qdrant_data/
+ollama_data/
+chroma_db/
+models/
+.ollama/
+
+# Corpus is downloaded at setup time (scripts/download_data.sh), not committed.
+# Keeps the repo small; the EU AI Act text stays outside git.
+data/raw/*
+!data/raw/.gitkeep
+
+# Secrets and local config - never commit real values.
+.env
+.env.local
+.env.*.local
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+.venv/
+.uv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.pyc
+*.pyo
+.coverage
+coverage.xml
+htmlcov/
+
+# Models / binaries accidentally dropped in the repo
+*.gguf
+*.bin
+*.safetensors
+*.sqlite
+*.db
+
+# Logs
+*.log
+logs/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Local tool overrides
+.mise.local.toml

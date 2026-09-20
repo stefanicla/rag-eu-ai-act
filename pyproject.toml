@@ -1,0 +1,34 @@
+[project]
+name = "rag-ai-act"
+version = "0.1.0"
+description = "Local RAG over the EU AI Act. Ollama + Qdrant + LlamaIndex + Streamlit. Fully offline."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+license = { text = "MIT" }
+
+dependencies = [
+    "llama-index-core==0.14.24",
+    "llama-index-llms-ollama>=0.11",
+    "llama-index-embeddings-ollama>=0.10",
+    "llama-index-vector-stores-qdrant>=0.10",
+    "qdrant-client>=1.19",
+    "streamlit>=1.63",
+    "pypdf>=6.18",
+    "python-dotenv>=1.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.13.1",
+    "pytest==8.4.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,59 @@
+# GPU overlay for machines with an NVIDIA GPU. Works alongside the CPU defaults:
+# base file = CPU-safe limits, this file = GPU unlock. The app code is identical.
+# Usage:
+#   cp .env.example .env            # keep LLM_MODEL=openbmb/minicpm5-2b on 6GB cards, see notes below
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+#   # or: make up-gpu
+#
+# Requires the NVIDIA Container Toolkit on the host:
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+# CachyOS/Arch: sudo pacman -S nvidia-dkms nvidia-utils nvidia-container-toolkit ; sudo nvidia-ctk runtime configure --runtime=docker ; sudo systemctl restart docker
+# Verify with:  docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi
+#
+# Tuned for a GTX 1660 Ti Mobile (6GB VRAM, host 20GB RAM, i5-10300H):
+# - openbmb/minicpm5-2b + nomic-embed-text fit together in 6GB VRAM at 4k context (recommended).
+# - qwen3:8b is marginal on 6GB: use LLM_NUM_CTX=4096, expect partial CPU offload
+#   (slower, more RAM). Only try LLM_NUM_CTX=8192 with the 2B/4B models.
+# - If Ollama logs OOM / "out of memory", drop OLLAMA_MAX_LOADED_MODELS back to 1
+#   or lower LLM_NUM_CTX to 2048.
+
+services:
+  ollama:
+    # Lift the CPU-box 4G/2-CPU cap. 12G RAM cap leaves room for OS/desktop on 20GB hosts.
+    mem_limit: 12G
+    cpus: 4.0
+    # Give the container access to all GPUs. Comment out to pin a card:
+    # device_ids: ['0']
+    gpus: all
+    environment:
+      # Keep in sync with LLM_NUM_CTX in .env. 4096 is the safe default for 6GB VRAM.
+      OLLAMA_NUM_CTX: "${LLM_NUM_CTX:-4096}"
+      OLLAMA_NUM_PARALLEL: "1"
+      # 2 keeps LLM + embed model resident together (4B fits in 6GB). Use 1 for 8B models.
+      OLLAMA_MAX_LOADED_MODELS: "2"
+      # Lower VRAM usage for the KV cache on Turing and newer.
+      OLLAMA_FLASH_ATTENTION: "1"
+      # Keep the model hot in VRAM for interactive chat.
+      OLLAMA_KEEP_ALIVE: 24h
+    deploy:
+      resources:
+        limits:
+          memory: 12G
+          cpus: '4'
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  ollama-puller:
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  app:
+    deploy:
+      resources:
+        limits:
+          memory: 4G

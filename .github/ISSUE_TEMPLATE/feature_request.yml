@@ -1,0 +1,21 @@
+name: ✨ Feature request
+description: Suggest an idea for this repo
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      placeholder: What RAG pain does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      placeholder: What should change? Any pointers to files?
+  - type: textarea
+    id: eval
+    attributes:
+      label: How should we measure it?
+      placeholder: e.g. hit-rate / MRR on data/gold_qa.json, RAGAS later

@@ -1,0 +1,27 @@
+# NOTICE
+
+This project is MIT-licensed (see LICENSE).
+
+## EU AI Act text 🇪🇺
+
+The corpus queried by this project — Regulation (EU) 2024/1689 of the European
+Parliament and of the Council (OJ L 2024/1689, 12.7.2024) — is a legislative
+text of the European Union. It is **not** part of this repository: it is
+downloaded at setup time by `scripts/download_data.sh` into the gitignored
+`data/raw/` directory.
+
+- Automated source (verbatim Markdown mirror used by the script):
+  https://github.com/tjf-trojer/eu-ai-act-map
+- Official source (authentic OJ PDF, manual download):
+  https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202401689
+
+Reuse of EU public documents is permitted under Commission Decision
+2011/833/EU on the reuse of Commission documents, with acknowledgement of
+the source.
+
+## Third-party components
+
+- Ollama, Qdrant, LlamaIndex, Streamlit and Python dependencies retain their
+  own licences (see their repositories and `uv.lock`).
+- Base container images: `python:3.13-slim`, `ollama/ollama:0.33.1`,
+  `qdrant/qdrant:v1.19.1`, `ghcr.io/astral-sh/uv:0.12.10`.

@@ -1,0 +1,14 @@
+[
+  {"id": "q01", "question": "What is the risk-based approach of the EU AI Act?", "expected_keywords": ["risk", "prohibited"]},
+  {"id": "q02", "question": "Which AI practices are prohibited under the AI Act?", "expected_keywords": ["prohibited", "social scoring"]},
+  {"id": "q03", "question": "What counts as a high-risk AI system?", "expected_keywords": ["high-risk", "annex"]},
+  {"id": "q04", "question": "What duties do providers of high-risk systems have?", "expected_keywords": ["provider", "conformity"]},
+  {"id": "q05", "question": "What duties do deployers of high-risk systems have?", "expected_keywords": ["deployer", "human oversight"]},
+  {"id": "q06", "question": "What are the transparency duties for chatbots and generated content?", "expected_keywords": ["transparency", "disclose"]},
+  {"id": "q07", "question": "What rules apply to general-purpose AI models?", "expected_keywords": ["general-purpose", "documentation"]},
+  {"id": "q08", "question": "What extra duties apply to GPAI models with systemic risk?", "expected_keywords": ["systemic risk", "evaluation"]},
+  {"id": "q09", "question": "What fines can the AI Act impose?", "expected_keywords": ["fine", "turnover"]},
+  {"id": "q10", "question": "Who enforces the AI Act at EU and national level?", "expected_keywords": ["market surveillance", "AI Office"]},
+  {"id": "q11", "question": "What is the conformity assessment for high-risk AI?", "expected_keywords": ["conformity", "notified body"]},
+  {"id": "q12", "question": "What record keeping and logging duties exist for high-risk AI?", "expected_keywords": ["log", "record"]}
+]
