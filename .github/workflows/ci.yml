@@ -11,7 +11,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Guard against committed secrets/corpus
         run: |
           test ! -e .env || (echo "::error::.env must never be committed" && exit 1)
